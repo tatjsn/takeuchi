@@ -26,11 +26,11 @@ function createForm(cardId, birthDate) {
 }
 
 fetch(url, { method: 'POST', body: createForm(cardId, birthDate) })
-        .then((res) => res.text())
-        .then((text) => {
-          const $ = cheerio.load(text);
-          const msg = $('body').text();
-          console.log(msg);
-        }).catch((e) => {
-          console.log(e);
-        });
+  .then((res) => res.text())
+  .then((text) => {
+    const $ = cheerio.load(text);
+    const msg = $('body').text();
+    console.log(msg);
+  }).catch((e) => {
+    console.log(e);
+  });
