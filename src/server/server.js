@@ -27,8 +27,11 @@ function createForm(cardId, birthDate) {
 }
 
 const app = express();
-app.get('/api', (req, res) => {
-  console.log(req.query);
+app.get('/message', (req, res) => {
+  res.json({ msg: 'hi' });
+});
+
+app.get('/proxy', (req, res) => {
   if (!(req.query.id && req.query.bd)) {
     res.status(400).json({ error: 'Bad query' });
     return;
