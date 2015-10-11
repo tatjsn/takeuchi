@@ -2,6 +2,7 @@ import fetch from 'node-fetch';
 import FormData from 'form-data';
 import cheerio from 'cheerio';
 import config from 'config';
+import express from 'express';
 
 const url = config.get('url');
 const cardId = config.get('cardId');
@@ -25,12 +26,24 @@ function createForm(cardId, birthDate) {
   return form;
 }
 
-fetch(url, { method: 'POST', body: createForm(cardId, birthDate) })
-  .then((res) => res.text())
-  .then((text) => {
-    const $ = cheerio.load(text);
-    const msg = $('body').text();
-    console.log(msg);
-  }).catch((e) => {
-    console.log(e);
-  });
+const app = express();
+app.get('/api', (req, res) => {
+  console.log(req.query);
+  if (!(req.query.id && req.query.bd)) {
+    res.status(400).json({ error: 'Bad query' });
+    return;
+  }
+  const form = createForm(req.query.id, req.query.bd);
+  fetch(url, { method: 'POST', body: form })
+    .then((res) => res.text())
+    .then((text) => {
+      const $ = cheerio.load(text);
+      res.json({ msg: $('body').text() });
+    }).catch((e) => {
+      res.status(400).json({ error: e });
+    });
+});
+app.use('/', express.static('dist'));
+
+const server = app.listen(8080);
+export default server;
