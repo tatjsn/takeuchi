@@ -3,7 +3,7 @@ export const RECEIVE_MESSAGE = 'RECEIVE_MESSAGE';
 
 export function fetchMessage(cardId, birthDate) {
   return (dispatch) => {
-    return fetch('/message')
+    return fetch(`/proxy?id=${cardId}&bd=${birthDate}`)
       .then(res => res.json())
       .then(json => dispatch(receiveMessage(json)));
   };

@@ -10,9 +10,9 @@ import thunkMiddleware from 'redux-thunk';
 
 const query = queryString.parse(window.location.search);
 const createStoreWithMiddleware = applyMiddleware(
-  thunkMiddleware // lets us dispatch() functions
+  thunkMiddleware // lets us dispatch in actions
 )(createStore);
-const store = createStoreWithMiddleware(app, { message: 'Init' });
+const store = createStoreWithMiddleware(app);
 
 ReactDOM.render((
   <Provider store={store}>
