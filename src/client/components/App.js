@@ -1,20 +1,12 @@
 import React from 'react';
-import { fetchMessage } from '../actions';
 import { connect } from 'react-redux';
 
-class App extends React.Component {
-  componentDidMount() {
-    this.props.dispatch(fetchMessage(this.props.cardId, this.props.birthDate));
-  }
-
-  render() {
-    return (
-      <p>
-        {this.props.message}
-      </p>
-    );
-  }
-}
+const App = (props) => (
+  <p>
+    {props.cardId}({props.birthDate})<br />
+    {props.message}
+  </p>
+);
 
 function select(state) {
   return {
