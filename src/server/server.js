@@ -27,11 +27,19 @@ function createForm(cardId, birthDate) {
 }
 
 const app = express();
-app.get('/message', (req, res) => {
+app.get('/test', (req, res) => {
   res.json({ msg: 'hi' });
 });
 
-app.get('/proxy', (req, res) => {
+app.get('/top', (req, res) => {
+  fetch(url + '?sp_sn=sp000001&dum=' + Date.now() / 1000)
+    .then(res => res.text())
+    .then(text => cheerio.load(text))
+    .then($ => res.json({ msg: $('body').text() }))
+    .catch(e => res.status(400).json({ error: e }))
+});
+
+app.get('/info', (req, res) => {
   if (!(req.query.id && req.query.bd)) {
     res.status(400).json({ error: 'Bad query' });
     return;

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 const App = (props) => (
   <p>
-    {props.cardId}({props.birthDate})<br />
+    {props.cardId}({props.birthDate}){(new Date()).toLocaleTimeString()}<br />
     {props.message}
   </p>
 );
