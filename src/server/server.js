@@ -31,11 +31,21 @@ app.get('/test', (req, res) => {
   res.json({ msg: 'hi' });
 });
 
+const getBodyText = $ =>
+  $('body').text().replace(/[\s\n]/g, '')
+
 app.get('/top', (req, res) => {
   fetch(url + '?sp_sn=sp000001&dum=' + Date.now() / 1000)
     .then(res => res.text())
     .then(text => cheerio.load(text))
-    .then($ => res.json({ msg: $('body').text() }))
+    .then(getBodyText)
+    .then(body => {
+      const res = /待ち人数(\d*)人待ち\(約(\d*)分\)本日(\d*)番/g.exec(body);
+      if (!res) throw 'unexpected_format';
+      return [res[1], res[2], res[3]];
+    })
+    .then(([numWait, timeWait, totalNum]) =>
+      res.json({ numWait, timeWait, totalNum }))
     .catch(e => res.status(400).json({ error: e }))
 });
 
@@ -46,13 +56,23 @@ app.get('/info', (req, res) => {
   }
   const form = createForm(req.query.id, req.query.bd);
   fetch(url, { method: 'POST', body: form })
-    .then((res) => res.text())
-    .then((text) => {
-      const $ = cheerio.load(text);
-      res.json({ msg: $('body').text() });
-    }).catch((e) => {
-      res.status(400).json({ error: e });
-    });
+    .then(res => res.text())
+    .then(text => cheerio.load(text))
+    .then(getBodyText)
+    .then(body => {
+      const res = /受付番号：(\d*)番あなたは(\d*)人目です。おおよそ(\d*)分後/g.exec(body);
+      if (!res) throw 'not_reserved';
+      return [res[1], res[2], res[3]];
+    })
+    .then(([resId, numInLine, timeInLine]) =>
+      res.json({ reserved: true, resId, numInLine, timeInLine }))
+    .catch(e => {
+      if (e === 'not_reserved') {
+        res.json({ reserved: false })
+      } else {
+        res.status(400).json({ error: e })
+      }
+    })
 });
 app.use('/', express.static('dist'));
 

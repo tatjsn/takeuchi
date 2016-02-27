@@ -1,17 +1,16 @@
 import React from 'react';
+import Top from './Top';
+import Info from './Info';
 import { connect } from 'react-redux';
 
-const App = (props) => (
-  <p>
-    {props.cardId}({props.birthDate}){(new Date()).toLocaleTimeString()}<br />
-    {props.message}
-  </p>
+const App = ({ cardId, birthDate, top, info }) => (
+  <div>
+    <p>
+      {cardId}({birthDate}){(new Date()).toLocaleTimeString()}
+    </p>
+    <Top {...top} />
+    <Info {...info} />
+  </div>
 );
 
-function select(state) {
-  return {
-    message: state.message
-  }
-}
-
-export default connect(select)(App);
+export default connect(({ top, info }) => ({ top, info }))(App);

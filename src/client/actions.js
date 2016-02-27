@@ -1,21 +1,25 @@
-export const FETCH_MESSAGE = 'FETCH_MESSAGE';
-export const RECEIVE_MESSAGE = 'RECEIVE_MESSAGE';
+export const RECEIVE_TOP = 'RECEIVE_TOP';
+export const RECEIVE_INFO = 'RECEIVE_INFO';
 
 const fetchOne = url =>
   fetch(url)
   .then(res => res.json())
-  .catch(e => ({ msg: e }))
+  .catch(e => ({ msg: e }));
 
-export function fetchMessage(cardId, birthDate) {
-  return dispatch =>
-    Promise.all([`/info?id=${cardId}&bd=${birthDate}`, `/top`].map(fetchOne))
-    .then(values => values.reduce((prev, cur) => ({ msg: prev.msg + cur.msg })))
-    .then(({ msg }) => dispatch(receiveMessage(msg)));
-}
+export const fetchTop = () =>
+  dispatch =>
+    fetch(`/top`)
+    .then(res => res.json())
+    .then(data => dispatch(receiveTop(data)))
+    .catch(error => dispatch(receiveTop({ error })));
 
-export function receiveMessage(msg) {
-  return {
-    type: RECEIVE_MESSAGE,
-    message: msg
-  }
-}
+export const fetchInfo = (cardId, birthDate) =>
+  dispatch =>
+    fetch(`/info?id=${cardId}&bd=${birthDate}`)
+    .then(res => res.json())
+    .then(data => dispatch(receiveInfo(data)))
+    .catch(error => dispatch(receiveInfo({ error })));
+
+
+export const receiveTop = payload => ({ type: RECEIVE_TOP, payload })
+export const receiveInfo = payload => ({ type: RECEIVE_INFO, payload })

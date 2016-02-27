@@ -7,14 +7,15 @@ import { Provider } from 'react-redux';
 import App from './components/App';
 import app from './reducers';
 import thunkMiddleware from 'redux-thunk';
-import { fetchMessage } from './actions';
+import { fetchTop, fetchInfo } from './actions';
 
 const query = queryString.parse(window.location.search);
 const createStoreWithMiddleware = applyMiddleware(
   thunkMiddleware // lets us dispatch in actions
 )(createStore);
 const store = createStoreWithMiddleware(app);
-store.dispatch(fetchMessage(query.id, query.bd));
+store.dispatch(fetchTop());
+store.dispatch(fetchInfo(query.id, query.bd));
 
 ReactDOM.render((
   <Provider store={store}>

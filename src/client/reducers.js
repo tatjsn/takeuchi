@@ -1,17 +1,27 @@
 import { combineReducers } from 'redux';
-import { RECEIVE_MESSAGE } from './actions';
+import { RECEIVE_TOP, RECEIVE_INFO } from './actions';
 
-function message(state = '', action) {
+function top(state = { loading: true }, action) {
   switch (action.type) {
-  case RECEIVE_MESSAGE:
-    return action.message;
+  case RECEIVE_TOP:
+    return action.payload;
   default:
     return state;
   }
 }
 
+function info(state = { loading: true }, action) {
+  switch (action.type) {
+    case RECEIVE_INFO:
+      return action.payload;
+    default:
+      return state;
+  }
+}
+
 const app = combineReducers({
-  message
+  top,
+  info
 });
 
 export default app;
